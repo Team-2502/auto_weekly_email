@@ -1,0 +1,9 @@
+venv/
+.idea/
+*.iml
+credentials.json
+client_secret.json
+captains.json
+weekly_email.html
+__pycache__/**
+*.pyc
