@@ -1,8 +1,10 @@
 from __future__ import print_function
+
+import datetime
+
 from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
-import datetime
 
 # Setup the Calendar API
 

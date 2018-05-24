@@ -1,6 +1,6 @@
+import datetime
 import json
 
-import datetime
 import mistune
 
 import mdutils
@@ -22,6 +22,9 @@ class WeeklyEmail:
     def __str__(self):
         return self.compile()
 
+    def add_room_times(self, open_room_times):
+        pass
+
 
 class Event:
 
@@ -38,11 +41,12 @@ class Event:
                 self.end = datetime.datetime.strptime(event_dict["end"]["dateTime"], format_single_day_time)
                 self.all_day = False
             else:
-
                 raise KeyError("Your event_dict does not seem to have a valid time marker; please check it.")
+
         except Exception as e:
             print(event_dict)
             raise e
+
         self.same_day = self.start.day == self.end.day
 
         self.heading = event_dict["summary"]
@@ -52,11 +56,36 @@ class Event:
         else:
             self.text = None
 
+        if "location" in event_dict.keys():
+            self.location = event_dict["location"]
+        else:
+            self.location = None
+
+        self.times = [self.get_time_string()]
+
     def __str__(self):
         result = ""
         if self.heading is not None:
             result += "## " + self.heading + "\n\n"
 
+        time_str = self.get_time_string()
+        if len(self.times) > 1:
+            result += "#### Times\n\n"
+            for occurence in self.times:
+                result += occurence
+
+        elif time_str is not None:
+            result += mdutils.b("Time: ") + time_str
+
+        if self.location is not None:
+            result += mdutils.b("Location: ") + str(self.location) + "\n\n"
+
+        if self.text is not None:
+            result += self.text
+
+        return result
+
+    def get_time_string(self):
         if self.same_day:
             if self.all_day:
                 time = self.start.strftime("%A, %B %dth all day")
@@ -66,15 +95,21 @@ class Event:
             if self.all_day:
                 time = self.start.strftime("%A, %B %dth to ") + self.end.strftime("%A, %B %dth")
             else:
-                time = self.start.strftime("%A, %B %dth from %I:%M %p") + self.end.strftime(" to %A, %B %dth at %I:%M %p")
-
+                time = self.start.strftime("%A, %B %dth from %I:%M %p") + self.end.strftime(
+                    " to %A, %B %dth at %I:%M %p")
         if time is not None:
-            result += mdutils.b("Time: ") + str(time) + "\n\n"
+            return str(time) + "\n\n"
+        return None
 
-        if self.text is not None:
-            result += self.text
+    def add_similar_event(self, other):
+        if type(other) == Event:
+            self.times.append(other.get_time_string())
+            return self
+        else:
+            raise ValueError("You tried to add an Event to something that was not an event")
 
-        return result
+    def __add__(self, other):
+        return self.add_similar_event(other)
 
 
 class Captain:
