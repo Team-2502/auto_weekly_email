@@ -8,7 +8,7 @@ from mdutils import emailLink
 
 
 class WeeklyEmail:
-    SEPARATOR = "\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-"
+    SEPARATOR = "---"
 
     def __init__(self):
         self.sections = []
