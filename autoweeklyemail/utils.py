@@ -47,7 +47,7 @@ class Event:
             print(event_dict)
             raise e
 
-        self.same_day = self.start.day == self.end.day
+        self.same_day = self.start.day == self.end.day or  (self.end - self.start).days == 1
 
         self.heading = event_dict["summary"]
 
