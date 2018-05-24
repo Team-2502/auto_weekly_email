@@ -140,17 +140,21 @@ def get_captains():
     Get the list of captains, and read them fresh from the json if there are none
     :return: A list of Captains
     """
-    if len(CAPTAINS) == 0:
-        captains_json = None
-        try:
-            captains_json = json.load(open("../captains.json"))
-        except FileNotFoundError:
-            captains_json = json.load(open("captains.json"))
 
-        for captain_dict in captains_json:
-            CAPTAINS.append(Captain(captain_dict["name"], captain_dict["email"], captain_dict["phone_num"]))
+    try:
+        if len(CAPTAINS) == 0:
+            captains_json = None
+            try:
+                captains_json = json.load(open("../captains.json"))
+            except FileNotFoundError:
+                captains_json = json.load(open("captains.json"))
 
-    return CAPTAINS
+            for captain_dict in captains_json:
+                CAPTAINS.append(Captain(captain_dict["name"], captain_ict["email"], captain_dict["phone_num"]))
+
+        return CAPTAINS
+    except FileNotFoundError:
+        print("WARN: Could not find `captains.json`. Signature will be empty")
 
 
 def gen_signature(captains=get_captains()):
