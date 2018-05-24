@@ -1,4 +1,6 @@
 import json
+
+import datetime
 import mistune
 
 import mdutils
@@ -21,18 +23,56 @@ class WeeklyEmail:
         return self.compile()
 
 
-class WeeklyEmailSection:
+class Event:
 
-    def __init__(self, heading=None, text=None):
-        self.heading = heading
-        self.text = text
+    def __init__(self, event_dict):
+        try:
+            if "date" in event_dict["start"].keys():
+                format_multi_day_time = "%Y-%m-%d"
+                self.start = datetime.datetime.strptime(event_dict["start"]["date"], format_multi_day_time)
+                self.end = datetime.datetime.strptime(event_dict["end"]["date"], format_multi_day_time)
+                self.all_day = True
+            elif "dateTime" in event_dict["start"].keys():
+                format_single_day_time = "%Y-%m-%dT%H:%M:%S-05:00"
+                self.start = datetime.datetime.strptime(event_dict["start"]["dateTime"], format_single_day_time)
+                self.end = datetime.datetime.strptime(event_dict["end"]["dateTime"], format_single_day_time)
+                self.all_day = False
+            else:
+
+                raise KeyError("Your event_dict does not seem to have a valid time marker; please check it.")
+        except Exception as e:
+            print(event_dict)
+            raise e
+        self.same_day = self.start.day == self.end.day
+
+        self.heading = event_dict["summary"]
+
+        if "description" in event_dict.keys():
+            self.text = event_dict["description"]
+        else:
+            self.text = None
 
     def __str__(self):
         result = ""
         if self.heading is not None:
-            result += "## " + self.heading
+            result += "## " + self.heading + "\n\n"
+
+        if self.same_day:
+            if self.all_day:
+                time = self.start.strftime("%A, %B %dth all day")
+            else:
+                time = self.start.strftime("%A, %B %dth from %I:%M %p") + self.end.strftime(" to %I:%M %p")
+        else:
+            if self.all_day:
+                time = self.start.strftime("%A, %B %dth to ") + self.end.strftime("%A, %B %dth")
+            else:
+                time = self.start.strftime("%A, %B %dth from %I:%M %p") + self.end.strftime(" to %A, %B %dth at %I:%M %p")
+
+        if time is not None:
+            result += mdutils.b("Time: ") + str(time) + "\n\n"
+
         if self.text is not None:
-            result += "\n\n" + self.text
+            result += self.text
 
         return result
 
