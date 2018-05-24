@@ -103,7 +103,7 @@ class Event:
 
     def add_similar_event(self, other):
         if type(other) == Event:
-            self.times.append(other.get_time_string())
+            self.times.extend(other.times)
             return self
         else:
             raise ValueError("You tried to add an Event to something that was not an event")
@@ -150,7 +150,7 @@ def get_captains():
                 captains_json = json.load(open("captains.json"))
 
             for captain_dict in captains_json:
-                CAPTAINS.append(Captain(captain_dict["name"], captain_ict["email"], captain_dict["phone_num"]))
+                CAPTAINS.append(Captain(captain_dict["name"], captain_dict["email"], captain_dict["phone_num"]))
 
         return CAPTAINS
     except FileNotFoundError:

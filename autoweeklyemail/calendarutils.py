@@ -49,4 +49,4 @@ def get_weeks_events(this_week=True, days_in_future=7):
 
 
 if __name__ == '__main__':
-    print(get_weeks_events(this_week=False, days_in_future=35))
+    print(get_weeks_events(this_week=False, days_in_future=7))
