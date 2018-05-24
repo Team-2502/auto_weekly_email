@@ -4,6 +4,7 @@ venv/
 credentials.json
 client_secret.json
 captains.json
+events.json
 weekly_email.html
 __pycache__/**
 *.pyc
