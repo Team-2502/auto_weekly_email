@@ -1,10 +1,18 @@
+import os
+import webbrowser
+
 import mistune
 
 import calendarutils
 import utils
 
 if __name__ == '__main__':
-    events = calendarutils.get_weeks_events(False, -14)
+    monday, sunday, events = calendarutils.get_weeks_events(False, -7)
+
+    header_format_string = "%B %dth"
+
+    monday_text = monday.strftime(header_format_string)
+    sunday_text = sunday.strftime(header_format_string)
 
     email = utils.WeeklyEmail()
 
@@ -14,7 +22,7 @@ if __name__ == '__main__':
     for event_dict in events:
         event_obj = utils.Event(event_dict)
         if event_obj.heading.lower() == "Captains Meeting".lower():
-            continue # Team does not need to know
+            continue  # Team does not need to know
         if event_dict["summary"].lower().find("open") > -1 and event_dict["summary"].lower().find("room") > -1:
             if open_room_times is None:
                 open_room_times = event_obj
@@ -32,11 +40,17 @@ if __name__ == '__main__':
             else:
                 regular_events.append(event_obj)
 
-    email.sections.append(open_room_times)
+    email.sections.append("# " + monday_text + " to " + sunday_text)
+    if open_room_times is not None:
+        email.sections.append(open_room_times)
+    else:
+        email.sections.append("### No open room scheduled for this week as of now.")
     email.sections.extend(regular_events)
     email.sections.append(utils.gen_signature())
     compiled_email = email.compile()
-    print(compiled_email)
+
     with open("weekly_email.html", "w") as f:
         f.write(mistune.markdown(compiled_email))
         f.close()
+
+    webbrowser.open("file://" + os.path.abspath("./weekly_email.html"))

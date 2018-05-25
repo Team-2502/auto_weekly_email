@@ -45,7 +45,7 @@ def get_weeks_events(this_week=True, days_in_future=7):
     events_result = service.events().list(calendarId='primary', timeMin=monday.isoformat() + 'Z',
                                           timeMax=sunday.isoformat() + 'Z', singleEvents=True,
                                           orderBy='startTime').execute()
-    return events_result.get('items', [])
+    return monday, sunday, events_result.get('items', [])
 
 
 if __name__ == '__main__':
