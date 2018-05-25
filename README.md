@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Team-2502/auto_weekly_email.svg?branch=master)](https://travis-ci.org/Team-2502/auto_weekly_email) [![codecov](https://codecov.io/gh/Team-2502/auto_weekly_email/branch/master/graph/badge.svg)](https://codecov.io/gh/Team-2502/auto_weekly_email)
 # auto_weekly_email
 
 Our team sends out a weekly email that describes what will be happening during the week (e.g when the workshop will be open,
