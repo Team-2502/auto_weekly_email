@@ -8,3 +8,5 @@ events.json
 weekly_email.html
 __pycache__/**
 *.pyc
+htmlcov/
+.coverage

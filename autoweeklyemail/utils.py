@@ -22,9 +22,6 @@ class WeeklyEmail:
     def __str__(self):
         return self.compile()
 
-    def add_room_times(self, open_room_times):
-        pass
-
 
 class Event:
 

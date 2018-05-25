@@ -1,5 +1,7 @@
 certifi==2018.4.16
 chardet==3.0.4
+codecov==2.0.15
+coverage==4.5.1
 Cython==0.28.2
 docutils==0.14
 google-api-python-client==1.6.7
