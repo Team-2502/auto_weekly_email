@@ -27,9 +27,9 @@ class WeeklyEmail:
             if type(section) == Event:
                 result += mdutils.b(section.heading)
                 result += ": "
-                for time in section.times:
+                for i, time in enumerate(section.times):
                     if len(section.times) > 1:
-                        result += "- "
+                        result += "\n\n - "
                     result += time
                     result += "\n\n"
         return result + WeeklyEmail.SEPARATOR
@@ -86,15 +86,6 @@ class Event:
         result = ""
         if self.heading is not None:
             result += "## " + self.heading + "\n\n"
-
-        time_str = self.get_time_string()
-        if len(self.times) > 1:
-            result += "#### Times\n\n"
-            for occurence in self.times:
-                result += occurence
-
-        elif time_str is not None:
-            result += mdutils.b("Time: ") + time_str
 
         if self.location is not None:
             result += mdutils.b("Location: ") + str(self.location) + "\n\n"
