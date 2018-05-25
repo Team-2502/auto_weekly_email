@@ -39,12 +39,10 @@ class EventTest(unittest.TestCase):
 
     def test_str(self):
         expected_str_first = "## End of the Year Banquet\n\n" \
-                             "**Time: **Tuesday, May 29th from 06:00 PM to 08:00 PM\n\n" \
                              "**Location: **Town Name High School, 1234 Street St, Small Town, MN, USA\n\n"
         actual_str_first = str(self.all_event_objs[0])
 
         expected_str_second = "## DQ Social\n\n" \
-                              "**Time: **Friday, June 01th from 09:00 PM to 10:30 PM\n\n" \
                               "**Location: **Restaurant Establishment, 5678 Road Blvd, Small Town, MN, USA\n\n" \
                               "This is where team members get to together, hang out, and eat ice cream. There is not necessarily a mentor present at this event."
         actual_str_second = str(self.all_event_objs[1])
@@ -67,9 +65,6 @@ class EventTest(unittest.TestCase):
         og_icecream_social_obj.add_similar_event(another_icecream_social_obj)
 
         expected_str = "## DQ Social\n\n" \
-                       "#### Times\n\n" \
-                       "Friday, June 01th from 09:00 PM to 10:30 PM\n\n" \
-                       "Friday, June 08th from 09:00 PM to 10:30 PM\n\n" \
                        "**Location: **Restaurant Establishment, 5678 Road Blvd, Small Town, MN, USA\n\n" \
                        "This is where team members get to together, hang out, and eat ice cream. There is not necessarily a mentor present at this event.\n\n"
 
