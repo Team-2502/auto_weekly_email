@@ -12,12 +12,34 @@ class WeeklyEmail:
 
     def __init__(self):
         self.sections = []
+        self.header = ""
 
     def compile(self):
-        return ("\n\n" + WeeklyEmail.SEPARATOR + "\n\n").join(str(section) for section in self.sections)
+        return str(self.header).strip() + "\n\n" + \
+               self._gen_overview() + "\n\n" + \
+               ("\n\n" + WeeklyEmail.SEPARATOR + "\n\n").join(str(section) for section in self.sections)
+
+    def _gen_overview(self):
+        result = ""
+        if len(self.sections) > 0:
+            result = "## Schedule\n\n"
+        for section in self.sections:
+            if type(section) == Event:
+                result += mdutils.b(section.heading)
+                result += ": "
+                for time in section.times:
+                    if len(section.times) > 1:
+                        result += "- "
+                    result += time
+                    result += "\n\n"
+        return result + WeeklyEmail.SEPARATOR
 
     def to_html(self):
         return mistune.markdown(self.compile())
+
+    @staticmethod
+    def get_n_spaces(n):
+        return "".join(" " for _ in range(n))
 
     def __str__(self):
         return self.compile()

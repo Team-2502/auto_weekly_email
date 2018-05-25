@@ -40,7 +40,7 @@ if __name__ == '__main__':
             else:
                 regular_events.append(event_obj)
 
-    email.sections.append("# " + monday_text + " to " + sunday_text)
+    email.header = "# " + monday_text + " to " + sunday_text
     if open_room_times is not None:
         email.sections.append(open_room_times)
     else:
