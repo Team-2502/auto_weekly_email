@@ -5,6 +5,7 @@ credentials.json
 client_secret.json
 captains.json
 !captains.json.enc
+!client_secret.json.enc
 events.json
 weekly_email.html
 __pycache__/**

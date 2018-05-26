@@ -1,5 +1,7 @@
 import tkinter as tk
-
+import webbrowser
+import traceback
+import utils
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -8,27 +10,28 @@ class Application(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        # Get list of events in the last week
+        self.error_messages = tk.Label(self, text="If there is an error message it will show up here")
+        self.error_messages.pack(side="bottom")
 
-        # Make checkboxes on the left for each thing
-        self.hi_there = tk.Button(self)
-        self.hi_there["text"] = "Hello World\n(click me)"
-        self.hi_there["command"] = self.say_hi
-        self.hi_there.pack(side="top")
-
-        self.quit = tk.Button(self, text="QUIT", fg="red",
-                              command=root.destroy)
-        self.quit.pack(side="bottom")
-
-    def say_hi(self):
-        print("hi there, everyone!")
+        self.make_email = tk.Button(self, text="Generate Weekly Email", fg="red",
+                                    command=self.generate_email)
+        self.make_email.pack(side="bottom")
 
     def generate_email(self):
-        raise NotImplementedError("come on mr programmer man")
+        try:
+            webbrowser.open("file://" + utils.generate_email())
+        except Exception as e:
+            self.error_messages["text"] = str(traceback.format_exc())
+            self.error_messages["font"] = ("Courier", 13)
+            raise e
 
 
-if __name__ == '__main__':
+def show_gui():
     root = tk.Tk()
-    root.minsize(500, 500)
+    root.title("Weekly Email Generator")
+    root.minsize()
     app = Application(master=root)
     app.mainloop()
+
+if __name__ == '__main__':
+    show_gui()
