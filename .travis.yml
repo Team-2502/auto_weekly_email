@@ -4,8 +4,8 @@ python:
 before_install:
 - openssl aes-256-cbc -K $encrypted_c47483315b1f_key -iv $encrypted_c47483315b1f_iv
   -in captains.json.enc -out captains.json -d
-- openssl aes-256-cbc -K $encrypted_c47483315b1f_key -iv $encrypted_c47483315b1f_iv
-  -in client_secret.json.enc -out autoweeklyemail/client_secret.json -d
+#- openssl aes-256-cbc -K $encrypted_c47483315b1f_key -iv $encrypted_c47483315b1f_iv
+#  -in client_secret.json.enc -out autoweeklyemail/client_secret.json -d
 install: pip install -r requirements.txt
 script: coverage run -m unittest test/utilstest.py
 after_success: codecov
