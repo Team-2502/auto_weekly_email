@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Person 1",
+    "email": "person.first@teamdomain.com",
+    "phone_num": "(555) 555-5555"
+  },
+  {
+    "name": "Person 2",
+    "email": "person.second@teamdomain.com",
+    "phone_num": "(555) 555-5555"
+  },
+  {
+    "name": "The Robot",
+    "email": "captains@teamdomain.com",
+    "phone_num": ""
+  }
+]
