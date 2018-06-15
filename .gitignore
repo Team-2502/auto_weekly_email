@@ -12,3 +12,4 @@ __pycache__/**
 *.pyc
 htmlcov/
 .coverage
+secrets.tar
