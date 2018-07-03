@@ -1,6 +1,6 @@
 import unittest
 
-from autoweeklyemail.utils import get_captains, Captain, Event
+from weeklyemailgenerator.utils import get_captains, Captain, Event
 
 
 def fun(x):

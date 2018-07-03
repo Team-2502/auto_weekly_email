@@ -1,12 +1,12 @@
 import datetime
 import json
 import os
+
 import mistune
 
-import mdutils
-from mdutils import emailLink
-import calendarutils
-
+from weeklyemailgenerator.mdutils import emailLink
+from weeklyemailgenerator import calendarutils
+from weeklyemailgenerator import mdutils
 
 class WeeklyEmail:
     SEPARATOR = "---"
@@ -228,8 +228,9 @@ def generate_email(days_in_past=0):
     email.sections.append(gen_signature())
     compiled_email = email.compile()
 
-    with open("weekly_email.html", "w") as f:
-        f.write(mistune.markdown(compiled_email))
-        f.close()
-
-    return os.path.abspath("./weekly_email.html")
+    return mistune.markdown(compiled_email)
+    # with open("weekly_email.html", "w") as f:
+    #     f.write(mistune.markdown(compiled_email))
+    #     f.close()
+    #
+    # return os.path.abspath("./weekly_email.html")

@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import datetime
+import os
 
 from googleapiclient.discovery import build
 from httplib2 import Http
@@ -11,8 +12,9 @@ from oauth2client import file, client, tools
 # Authentication scope
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
 
+print("calendarutils", __file__)
 # Where our OAuth2 Tokens are stored
-store = file.Storage('credentials.json')
+store = file.Storage(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'credentials.json'))
 
 # Load em
 creds = store.get()
@@ -20,7 +22,7 @@ creds = store.get()
 # If they're old / don't exist
 if not creds or creds.invalid:
     # Get some
-    flow = client.flow_from_clientsecrets('client_secret.json', SCOPES)
+    flow = client.flow_from_clientsecrets(os.path.dirname(os.path.join(os.path.dirname(__file__)), "client_secret.json"), SCOPES)
     creds = tools.run_flow(flow, store)
 
 # Set up our API caller thing
