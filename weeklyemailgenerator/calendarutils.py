@@ -1,29 +1,25 @@
 from __future__ import print_function
 
 import datetime
+import json
 import os
 
 from googleapiclient.discovery import build
 from httplib2 import Http
-from oauth2client import file, client, tools
+from oauth2client import service_account
 
 # Setup the Calendar API
 
 # Authentication scope
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
 
-print("calendarutils", __file__)
-# Where our OAuth2 Tokens are stored
-store = file.Storage(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'credentials.json'))
-
-# Load em
-creds = store.get()
-
-# If they're old / don't exist
-if not creds or creds.invalid:
-    # Get some
-    flow = client.flow_from_clientsecrets(os.path.dirname(os.path.join(os.path.dirname(__file__)), "client_secret.json"), SCOPES)
-    creds = tools.run_flow(flow, store)
+# Authenticate
+if "HEROKU" in os.environ:
+    keyfile = json.loads(os.environ.get("CREDS"))
+    creds = service_account.ServiceAccountCredentials.from_json_keyfile_dict(keyfile, scopes=SCOPES)
+else:
+    filename = os.path.join(os.path.dirname(os.path.dirname(__file__)), "long-octane-204901-1df13693f95a.json")
+    creds = service_account.ServiceAccountCredentials.from_json_keyfile_name(filename, scopes=SCOPES)
 
 # Set up our API caller thing
 service = build('calendar', 'v3', http=creds.authorize(Http()))
@@ -44,7 +40,7 @@ def get_weeks_events(this_week=True, days_in_future=7):
     sunday = now + time_delta_to_sunday
 
     # Call calendar/v3/calendars/calendarId/events
-    events_result = service.events().list(calendarId='primary', timeMin=monday.isoformat() + 'Z',
+    events_result = service.events().list(calendarId='info@team2502.com', timeMin=monday.isoformat() + 'Z',
                                           timeMax=sunday.isoformat() + 'Z', singleEvents=True,
                                           orderBy='startTime').execute()
     return monday, sunday, events_result.get('items', [])
