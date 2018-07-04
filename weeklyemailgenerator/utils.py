@@ -175,8 +175,9 @@ def gen_signature(captains=get_captains()):
     :return: A markdown-formatted email signature
     """
     result = ""
-    for captain in captains:
-        result += str(captain) + "\n\n\n"
+    if captains is not None:
+        for captain in captains:
+            result += str(captain) + "\n\n\n"
     return result
 
 
