@@ -214,6 +214,8 @@ def generate_email(days_in_past=0):
     :param days_in_past: How many days ago we should pretend we are (adjusts for which week the email is for)
     :return: The absolute path to the HTML File
     """
+    print("DEBUG: Started generate_email")
+
     monday, sunday, events = calendarutils.get_weeks_events(False, -days_in_past)
 
     header_format_string = "%B %dth"
@@ -221,13 +223,16 @@ def generate_email(days_in_past=0):
     monday_text = monday.strftime(header_format_string)
     sunday_text = sunday.strftime(header_format_string)
 
+    print("DEBUG: Figured out the dates of the email")
     email = WeeklyEmail()
+    print("DEBUG: Constructed a WeeklyEmail()")
 
     open_room_times = None
     regular_events = []
 
     for event_dict in events:
         event_obj = Event(event_dict)
+        print("DEBUG: Found an event -- {}".format(event_obj.heading.lower()))
         if event_obj.heading.lower() == "Captains Meeting".lower():
             continue  # Team does not need to know
         if event_dict["summary"].lower().find("open") > -1 and event_dict["summary"].lower().find("room") > -1:
@@ -247,15 +252,21 @@ def generate_email(days_in_past=0):
             else:
                 regular_events.append(event_obj)
 
+    print("DEBUG: Finished iterating through events")
+
     email.header = "# " + monday_text + " to " + sunday_text
     if open_room_times is not None:
         email.sections.append(open_room_times)
     else:
         email.sections.append("### No open room scheduled for this week as of now.")
+
+    print("DEBUG: Determined if there was open room this week")
+
     email.sections.extend(regular_events)
     email.sections.append(gen_signature())
     compiled_email = email.compile()
 
+    print("DEBUG: Completed the email!")
     return mistune.markdown(compiled_email)
     # with open("weekly_email.html", "w") as f:
     #     f.write(mistune.markdown(compiled_email))
