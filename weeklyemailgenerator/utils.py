@@ -1,12 +1,15 @@
 import datetime
 import json
+from dateutil.parser import isoparse
 import os
+from typing import List
 
 import mistune
 
 from weeklyemailgenerator.mdutils import emailLink
 from weeklyemailgenerator import calendarutils
 from weeklyemailgenerator import mdutils
+
 
 class WeeklyEmail:
     SEPARATOR = "---"
@@ -56,9 +59,8 @@ class Event:
                 self.end = datetime.datetime.strptime(event_dict["end"]["date"], format_multi_day_time)
                 self.all_day = True
             elif "dateTime" in event_dict["start"].keys():
-                format_single_day_time = "%Y-%m-%dT%H:%M:%S-05:00"
-                self.start = datetime.datetime.strptime(event_dict["start"]["dateTime"], format_single_day_time)
-                self.end = datetime.datetime.strptime(event_dict["end"]["dateTime"], format_single_day_time)
+                self.start = isoparse(event_dict["start"]["dateTime"])
+                self.end = isoparse(event_dict["end"]["dateTime"])
                 self.all_day = False
             else:
                 raise KeyError("Your event_dict does not seem to have a valid time marker; please check it.")
@@ -67,7 +69,7 @@ class Event:
             print(event_dict)
             raise e
 
-        self.same_day = self.start.day == self.end.day or  (self.end - self.start).days == 1
+        self.same_day = self.start.day == self.end.day or (self.end - self.start).days == 1
 
         self.heading = event_dict["summary"]
 
@@ -152,32 +154,57 @@ def get_captains():
     :return: A list of Captains
     """
 
+    def _try_to_load_json_file(filename):
+        filenames = [filename, "../" + filename]
+
+        ret_json = None
+        for fname in filenames:
+            try:
+                with open(fname) as f:
+                    ret_json = json.load(f)
+            except FileNotFoundError:
+                pass
+
+        if ret_json is not None:
+            return ret_json
+        else:
+            raise FileNotFoundError
+
     try:
         if len(CAPTAINS) == 0:
             captains_json = None
             try:
-                captains_json = json.load(open("../captains.json"))
+                with open("../captains.json") as f:
+                    captains_json = json.load(f)
             except FileNotFoundError:
-                captains_json = json.load(open("captains.json"))
+                with open("captains.json") as f:
+                    captains_json = json.load(f)
 
             for captain_dict in captains_json:
                 CAPTAINS.append(Captain(captain_dict["name"], captain_dict["email"], captain_dict["phone_num"]))
 
         return CAPTAINS
+
     except FileNotFoundError:
-        print("WARN: Could not find `captains.json`. Signature will be empty")
+        print("WARN: Could not find `captains.json`. Using sample captains list!\n")
+        with open("../sample_captains.json") as f:
+            captains_json = json.load(f)
+        for captain_dict in captains_json:
+            CAPTAINS.append(Captain(captain_dict["name"], captain_dict["email"], captain_dict["phone_num"]))
+        return CAPTAINS
 
 
-def gen_signature(captains=get_captains()):
+def gen_signature(captains: List[str] = None):
     """
     Generate a weekly email signature given a complete list of captains
     :param captains: List of Captains
     :return: A markdown-formatted email signature
     """
     result = ""
-    if captains is not None:
-        for captain in captains:
-            result += str(captain) + "\n\n\n"
+    if captains is None:
+        captains = get_captains()
+    for captain in captains:
+        result += str(captain) + "\n\n\n"
     return result
 
 
